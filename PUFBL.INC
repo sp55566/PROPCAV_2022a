@@ -1,0 +1,35 @@
+
+C      COMMON /INTGV/  NTW(MBZ)
+C      COMMON /PUFBL/ AV(NZVIS,NZVIS),AVINV(NZVIS,NZVIS)
+C     *     ,         BETA(NZVIS,NZVIS),CSIGMA(NZVIS,NZVIS)
+C     *     ,         AWV(NZVIS,NZVIS),CA(NZVIS,NZVIS)
+C     *     ,         CB(NZVIS,NZVIS),DH1(NZVIS,NZVIS)
+C     *     ,         DH(NZVIS,NZVIS),DD(NZVIS,NZVIS)
+C     *     ,         REC(MBZ),CS(NZVIS,NZVIS)
+C     *     ,         XTRANLP(MBZ),XTRANLS(MBZ)
+C      COMMON /VISBL/ UVL(NZVIS),SVL(NZVIS),XNVIS(NZVIS)
+C     *     ,         YNVIS(NZVIS),XCVIS(NZVIS),YCVIS(NZVIS)
+C     *     ,         DVL(NZVIS,NZVIS)
+C      COMMON /REBL/  BSRCB(NPANZ,KZ),BSRCWS(NSCWZ,KZ),BSRCW(NSCWZ,KZ) 
+
+C      COMMON /ARCLV/ DELTZ(NZVIS,MBZ),DELTS(NZVIS,MBZ)
+C     *     ,         SC(NZVIS,MBZ),SP(NZVIS,MBZ),CDV(MBZ)
+
+C-----------------------------------------------------------------------
+C     Common Blocks for IDUCT=1     Hong added  06/02/2006
+C-----------------------------------------------------------------------
+C      COMMON /INTGVD/ NTWD(MDMAX)
+C      COMMON /PUFBLD/ AVD(NZVISD,NZVISD),AVDINV(NZVISD,NZVISD)
+C     *     ,         BETAD(NZVISD,NZVISD),CSIGMAD(NZVISD,NZVISD)
+C     *     ,         AWVD(NZVISD,NZVISD),CAD(NZVISD,NZVISD)
+C     *     ,         CBD(NZVISD,NZVISD),DH1D(NZVISD,NZVISD)
+C     *     ,         DHD(NZVISD,NZVISD),DD_D(NZVISD,NZVISD)
+C     *     ,         RECD(MDMAX),CSD(NZVISD,NZVISD)
+C     *     ,         XTRANDP(MBZ),XTRANDS(MBZ)     
+C      COMMON /VISBLD/ UVLD(NZVISD),SVLD(NZVISD),XNVISD(NZVISD)
+C     *     ,         YNVISD(NZVISD),XCVISD(NZVISD),YCVISD(NZVISD)
+C     *     ,         DVLD(NZVISD,NZVISD)
+C      COMMON /REBLD/  BSRCBD(NPANZ,KZ),BSRCWSD(NSCWZ,KZ)
+C     *     ,         BSRCWD(NSCWZ,KZ) 
+C      COMMON /ARCLVD/ DELTZD(NZVISD,MDMAX),DELTSD(NZVISD,MDMAX)
+C     *     ,         SCD(NZVISD,MDMAX),SPD(NZVISD,MDMAX),CDVD(MDMAX)

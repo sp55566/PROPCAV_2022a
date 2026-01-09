@@ -1,0 +1,29 @@
+       SUBROUTINE CALQC2_ICON8(N,N1,M,IDR,PLAW,ADVCO2,UW2,QC2)
+
+       INCLUDE 'PUFCAV.INC'
+       INCLUDE 'PUFCAVB.INC'
+
+       IF(IDR.EQ.1) THEN
+          QC2=SIGMAB*PLAW/ADVCO2+UW2
+       ELSE IF(IDR.EQ.2) THEN
+          NDUM=NLEP(M,IDXREV,2)+N
+          XDUM=(ARCLNG(NDUM,M,2)+HALF*DS(N1,M))/ARCLNG(NHP,M,2)
+
+          XLTRAN1=XLTRAN-DS(1,M)/ARCLNG(NHP,M,2)
+          ZETA=XDUM+XLTRAN-ONE
+          IF(ZETA.LT.ZERO.OR.XLTRAN.EQ.ZERO) THEN
+             SIGMA2=SIGMAF
+          ELSE
+             DDD1=SIGMAB-SIGMAF
+             DDD2=ZETA/XLTRAN1
+             IF(DDD2.GT.ONE) DDD2=ONE
+             SIGMA2=SIGMAF+3.*DDD1*DDD2**2.-2.*DDD1*DDD2**3.
+          END IF
+
+          QC2=SIGMA2*PLAW/ADVCO2+UW2
+       END IF
+       
+       RETURN
+       END
+          
+
