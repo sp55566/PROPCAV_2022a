@@ -91,7 +91,7 @@ C-----------------------------------------------------------------------
             CALL INFGENW
 C-----------------------------------------------------------------------
 C       If ISP=1 and IMG=1, then the influence coefficients are read in
-C       subroutine INDPOT_IM.F because the IC's due to the image panels
+C-------subroutine INDPOT_IM.F because the IC's due to the image panels
 C       need to be added.                                       JY011300
 C-----------------------------------------------------------------------
 
@@ -166,13 +166,13 @@ C.......coefficients....................................................
                   CALL READ1(52,AA(1,J),NPANEL)
                   CALL READ1(42,BB(1,J),NPANEL)
                   IF((ICON.EQ.5).AND.(IHULL.EQ.1)) NBLADE=2
-CSH--------------------------------------------     
+C SH--------------------------------------------     
                   DO KK=2,NBLADE
                      CALL READ1(42,TEMP1,NPANEL)
                   ENDDO
-CSH--REPLACE, NBLADE=1-------------------------
+C SH--REPLACE, NBLADE=1-------------------------
                   IF((ICON.EQ.5).AND.(IHULL.EQ.1)) NBLADE=1
-CSH--------------------------------------------
+C SH--------------------------------------------
                ENDDO
 
                IF(IHUB .NE. 0) THEN
