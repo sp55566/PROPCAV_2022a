@@ -304,8 +304,8 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     compute the inflow velocities at the current time step
 C-----------------------------------------------------------------------
-CT....Temporary change:  If ISP=1, use velocity distribution in Page 56
-CT....of Olofsson's dissertation. (JY090900)
+C T....Temporary change:  If ISP=1, use velocity distribution in Page 56
+C T....of Olofsson's dissertation. (JY090900)
       IF(ISP.EQ.1.AND.ICON.NE.7.AND.FN(1:LENCH).EQ.'m841b') THEN
          CALL M841BFLOW
       ELSE

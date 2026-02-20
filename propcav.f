@@ -743,7 +743,12 @@ C     -- Start run from cavity problem by skipping wetted run.
 
         if(iscav .ne. 0) then
           rc1 = radini
-          if(iscav .eq. 1) call inidetach
+          if(iscav .eq. 1) call inidetach 
+
+c shibo peng 2026/2/19 comments:
+c call inidetach sets the initial cavity geometry for the first cavity solution. 
+c It is called only once at the beginning of the cavity solution.
+
           go to 301
         endif
         icavsave = icavmax ! Initial 'icavmax' comes from 'cav.ctr' file.
