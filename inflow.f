@@ -19,9 +19,7 @@
       INCLUDE 'PUFCAVB.INC'
 
       DIMENSION U(3),NH1(3)
-      REAL, ALLOCATABLE :: XVTMP(:), ATMP(:,:,:), BTMP(:,:,:)
-      REAL, ALLOCATABLE :: UXTMP(:,:),UYTMP(:,:),UZTMP(:,:),TTMP(:)
-      
+
       REAL RVT
       LOGICAL IRVT
       RVT=1.0
