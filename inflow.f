@@ -19,12 +19,16 @@
       INCLUDE 'PUFCAVB.INC'
 
       DIMENSION U(3),NH1(3)
+      INTEGER, PARAMETER :: NXVTMP = 301, NRTMP = 201
+      REAL XVTMP(NXVTMP), ATMP(NRTMP,20,3), BTMP(NRTMP,20,3)
+      REAL UXTMP(NRTMP,NXVTMP), UYTMP(NRTMP,NXVTMP)
+      REAL UZTMP(NRTMP,NXVTMP), TTMP(NXVTMP)
 
       REAL RVT
       LOGICAL IRVT
       RVT=1.0
       INQUIRE(FILE='rvt.inp',EXIST=IRVT)
-      IF (IRVT.EQ.(.TRUE.)) THEN
+      IF (IRVT.EQV.(.TRUE.)) THEN
         RVT=-1.0
         IF (NTSTEP.EQ.0) WRITE(*,*) 'Left handed, reverse Ueff_swirl!'
       END IF
@@ -91,7 +95,7 @@ C ---------------
             VOT=U(3)
 
 CYiranSu_PC2NS_read_effective wake
-            IF (IPC2NS.EQ.(.TRUE.)) THEN
+            IF (IPC2NS.EQV.(.TRUE.)) THEN
               IF (J.LE.(NC*MR)) THEN
                 M=MR-FLOOR(REAL(J-1)/REAL(NC))
                 KK0 = 1
@@ -142,6 +146,7 @@ C#2
 
 C/s S. KIM| local friction coefficients
             IF (KK.EQ.1) THEN
+               IF (IVISC.EQ.1) XCDF = REYD
                IF (J.LE.(NC*MR)) THEN
                   M = MR - FLOOR(REAL(J-1)/REAL(NC))
                   N = J - (MR-M)*NC 
@@ -314,7 +319,73 @@ cC -- End Tip (10/12/99)
 C**********************************************************************
 C/e S.N.KIM | Aug. 2018.
 C**********************************************************************
+! T.WU plot the inflow wake
+      IF (NTSTEP.EQ.0.AND.ICAVT.EQ.1) THEN
+!
+!
+         OPEN(091725,FILE='UE_WAK.plt',STATUS='UNKNOWN')
+         WRITE(091725,*) 'VARIABLES=Y,Z,UX,UY,UZ'
+         WRITE(091725,*) 'ZONE T = "BLD",I=',MRP,',J=',NTPREV+1,',K=',1
 
+         TTMP(1) = 0.0
+         DO K = 1 , NTPREV
+            TTMP(K+1) = TTMP(K) + DELTAT
+         ENDDO
+!
+         DO I = 1 , 3
+            DO K = 1 , 2
+               DO J = 1 , NHARM(I)
+                  CALL EVALDK(NWKCOE,MRP,XRW,RZ,XVTMP,XWCUB(1,J,K,I))
+                  DO M = 1 , MRP
+                     IF(K .EQ. 1) THEN
+                        ATMP(M,J,I) = XVTMP(M)
+                     ELSEIF(K .EQ. 2) THEN
+                        BTMP(M,J,I) = XVTMP(M)
+                     ENDIF
+                  ENDDO
+               ENDDO
+            ENDDO
+         ENDDO
+!
+         DO M = 1 , MRP
+            DO K = 1 , NTPREV+1
+               DO J = 1 , NHARM(1)
+                  UXTMP(M,K) = UXTMP(M,K) + 
+     &                   ATMP(M,J,1) * COS( (J-1) * TTMP(K) ) +
+     &                   BTMP(M,J,1) * SIN( (J-1) * TTMP(K) )
+               ENDDO
+               DO J = 1 , NHARM(2)
+                  UYTMP(M,K) = UYTMP(M,K) + 
+     &                   ATMP(M,J,2) * COS( (J-1) * TTMP(K) ) +
+     &                   BTMP(M,J,2) * SIN( (J-1) * TTMP(K) )
+               ENDDO
+               DO J = 1 , NHARM(3)
+                  UZTMP(M,K) = UZTMP(M,K) + 
+     &                   ATMP(M,J,3) * COS( (J-1) * TTMP(K) ) +
+     &                   BTMP(M,J,3) * SIN( (J-1) * TTMP(K) )
+               ENDDO
+            ENDDO
+         ENDDO
+!
+         DO K = 1 , NTPREV+1
+            DO M = 1 , MRP
+               UR = UYTMP(M,K)
+               UT = UZTMP(M,K)
+               
+               UYTMP(M,K) = UR * COS(TTMP(K)) 
+     &              - UT * SIN(TTMP(K))
+               UZTMP(M,K) = UR * SIN(TTMP(K)) 
+     &              + UT * COS(TTMP(K))
+            ENDDO
+         ENDDO
+         DO K = 1 , NTPREV+1
+            DO M = 1 , MRP
+               Y = RZ(M) * COS(TTMP(K))
+               Z = RZ(M) * SIN(TTMP(K))
+               WRITE(091725,*) Y, Z, UXTMP(M,K), UYTMP(M,K), UZTMP(M,K)
+            ENDDO
+         ENDDO
+      ENDIF
       RETURN
 C>>>>>>>>>>>>>>>>>>>>>>End of subroutine INFLOW>>>>>>>>>>>>>>>>>>>>>>>>>
       END
@@ -450,7 +521,6 @@ CYiranSu read wake from PF2NS effective wake file (NS2MPUF.dat)
 *              END IF
 *            END IF
 CYiranSu_end
-
 
 
 
