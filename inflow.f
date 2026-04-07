@@ -314,7 +314,81 @@ cC -- End Tip (10/12/99)
 C**********************************************************************
 C/e S.N.KIM | Aug. 2018.
 C**********************************************************************
+! T.WU plot the inflow wake
+      IF (NTSTEP.EQ.0.AND.ICAVT.EQ.1) THEN
+!
+         ! ALLOCATE(XVTMP(MRP), ATMP(MRP,20,3), BTMP(MRP,20,3))
+         ! ALLOCATE(UXTMP(MRP,NTPREV+1),UYTMP(MRP,NTPREV+1),UZTMP(MRP,NTPREV+1))
+         ! ALLOCATE(TTMP(NTPREV+1))
+         ALLOCATE(XVTMP(301), ATMP(201,20,3), BTMP(201,20,3))
+         ALLOCATE(UXTMP(201,301),UYTMP(201,301),UZTMP(201,301))
+         ALLOCATE(TTMP(301))
+!
+         OPEN(091725,FILE='UE_WAK.plt',STATUS='UNKNOWN')
+         WRITE(091725,*) 'VARIABLES=Y,Z,UX,UY,UZ'
+         WRITE(091725,*) 'ZONE T = "BLD",I=',MRP,',J=',NTPREV+1,',K=',1
 
+         TTMP(1) = 0.0
+         DO K = 1 , NTPREV
+            TTMP(K+1) = TTMP(K) + DELTAT
+         ENDDO
+!
+         DO I = 1 , 3
+            DO K = 1 , 2
+               DO J = 1 , NHARM(I)
+                  CALL EVALDK(NWKCOE,MRP,XRW,RZ,XVTMP,XWCUB(1,J,K,I))
+                  DO M = 1 , MRP
+                     IF(K .EQ. 1) THEN
+                        ATMP(M,J,I) = XVTMP(M)
+                     ELSEIF(K .EQ. 2) THEN
+                        BTMP(M,J,I) = XVTMP(M)
+                     ENDIF
+                  ENDDO
+               ENDDO
+            ENDDO
+         ENDDO
+!
+         DO M = 1 , MRP
+            DO K = 1 , NTPREV+1
+               DO J = 1 , NHARM(1)
+                  UXTMP(M,K) = UXTMP(M,K) + 
+     &                   ATMP(M,J,1) * COS( (J-1) * TTMP(K) ) +
+     &                   BTMP(M,J,1) * SIN( (J-1) * TTMP(K) )
+               ENDDO
+               DO J = 1 , NHARM(2)
+                  UYTMP(M,K) = UYTMP(M,K) + 
+     &                   ATMP(M,J,2) * COS( (J-1) * TTMP(K) ) +
+     &                   BTMP(M,J,2) * SIN( (J-1) * TTMP(K) )
+               ENDDO
+               DO J = 1 , NHARM(3)
+                  UZTMP(M,K) = UZTMP(M,K) + 
+     &                   ATMP(M,J,3) * COS( (J-1) * TTMP(K) ) +
+     &                   BTMP(M,J,3) * SIN( (J-1) * TTMP(K) )
+               ENDDO
+            ENDDO
+         ENDDO
+!
+         DO K = 1 , NTPREV+1
+            DO M = 1 , MRP
+               UR = UYTMP(M,K)
+               UT = UZTMP(M,K)
+               
+               UYTMP(M,K) = UR * COS(TTMP(K)) 
+     &              - UT * SIN(TTMP(K))
+               UZTMP(M,K) = UR * SIN(TTMP(K)) 
+     &              + UT * COS(TTMP(K))
+            ENDDO
+         ENDDO
+         DO K = 1 , NTPREV+1
+            DO M = 1 , MRP
+               Y = RZ(M) * COS(TTMP(K))
+               Z = RZ(M) * SIN(TTMP(K))
+               WRITE(091725,*) Y, Z, UXTMP(M,K), UYTMP(M,K), UZTMP(M,K)
+            ENDDO
+         ENDDO
+         DEALLOCATE(XVTMP, ATMP, BTMP)
+         DEALLOCATE(UXTMP, UYTMP, UZTMP, TTMP)
+      ENDIF
       RETURN
 C>>>>>>>>>>>>>>>>>>>>>>End of subroutine INFLOW>>>>>>>>>>>>>>>>>>>>>>>>>
       END

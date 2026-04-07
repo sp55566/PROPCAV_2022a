@@ -138,7 +138,7 @@ C..........3 at the first revolution to enhance stability. (SKIM 072419)
       ELSE
          ITERMAX=30
       ENDIF
-
+C..........THIS IS THE BEGINING OF THE ITERATION LOOP FOR CAVITY LENGTH.
       DO 80 ITER=1, ITERMAX
          IF(ICONVR.EQ.0)THEN
 C..........re-set the source strengths to the wetted source strengths...
@@ -199,7 +199,7 @@ C-----------------------------------------------------------------------
 C..........Variable IT2 added for iteration of DPDVB within each 
 C..........iteration for cavity length. (JY080600)
             IT2=0
-
+C..........CAVITY PRESSURE IS UPDATED INSIDE DELR
             CALL DELR
 
 C..........Store cavity length (JY072001)
